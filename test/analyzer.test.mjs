@@ -47,7 +47,7 @@ function makeAgyDb(file, t0) {
   db.exec('create table gen_metadata (idx integer primary key, data blob, size integer)');
   const put = db.prepare('insert into steps (idx, step_type, status, metadata, step_payload) values (?, ?, 3, ?, ?)');
   const cmd = 'git reset --hard HEAD && git clean -fd';
-  put.run(0, 14, stepMeta(t0), msg(field(1, 14), field(19, msg(field(2, 'Publisher \uD50C\uB7EC\uADF8\uC778\uC744 \uCD94\uAC00\uD574\uC918')))));
+  put.run(0, 14, stepMeta(t0), msg(field(1, 14), field(19, msg(field(2, 'Exporter \uD50C\uB7EC\uADF8\uC778\uC744 \uCD94\uAC00\uD574\uC918')))));
   put.run(1, 15, stepMeta(t0 + 1000), msg(field(1, 15), field(20, msg(field(1, '[Jev] routed this turn to gemini-pro-agent (jev, confidence 0.57).\n\nAdding the plugin now.')))));
   put.run(2, 14, stepMeta(t0 + 60_000), msg(field(1, 14), field(19, msg(field(2, 'UI \uB97C \uAE68\uBA39\uC5C8\uC5B4. \uC774\uC804 \uCEE4\uBC0B\uC744 \uD655\uC778\uD574\uC11C \uC6D0\uC0C1 \uBCF5\uADC0\uD574')))));
   put.run(3, 15, stepMeta(t0 + 61_000), msg(field(1, 15), field(20, msg(
@@ -115,7 +115,7 @@ function fixtureHome() {
   jsonl(join(home, '.codex', 'sessions', '2026', '09', '28', 'rollout-old.jsonl'), codexRows(NOW - 30 * HOUR, 'codex-old'));
   const agy = join(home, '.gemini', 'antigravity-cli', 'conversations');
   mkdirSync(agy, { recursive: true });
-  makeAgyDb(join(agy, 'publisher-fixture.db'), t0);
+  makeAgyDb(join(agy, 'exporter-fixture.db'), t0);
   const status = join(home, 'tmp', 'jev-claude');
   mkdirSync(status, { recursive: true });
   writeFileSync(join(status, 'sess-claude-1.json'), JSON.stringify({ tier: 'opus', model: 'claude-opus-5-5', effort: 'high', confidence: 0.8, reason: 'jev', at: t0, prompt: 'parser.js \uC758 \uC2E4\uD328\uD558\uB294 \uD14C\uC2A4\uD2B8\uB97C \uACE0\uCCD0\uC918' }));
@@ -208,7 +208,7 @@ test('collect: window, same-session dedupe, post-now exclusion and routing split
   assert.equal(byKey.get('claude:sess-late').exclusion, 'started-after-now');
   assert.equal(byKey.get('codex:codex-thread-1').routing, 'jev-routed');
   assert.ok(!byKey.has('codex:codex-old') || byKey.get('codex:codex-old').exclusion, 'older than the window');
-  const agy = byKey.get('antigravity:publisher-fixture');
+  const agy = byKey.get('antigravity:exporter-fixture');
   assert.equal(agy.destructive.length, 1);
   const claude = byKey.get('claude:sess-claude-1');
   assert.equal(claude.followUps.length, 1, 'system-reminder is not a human follow-up');
@@ -263,7 +263,7 @@ test('labels need cited user/QA/test provenance; assistant completion never coun
   assert.match(validateLabel({ ...base, outcome: 'success', basis: 'user', citations: ['L99'] }, s).join(), /not present/);
   assert.match(validateLabel({ ...base, outcome: 'success', basis: 'user', citations: [s.lastAssistant.ref] }, s).join(), /human follow-up/, 'assistant text is not user evidence');
   assert.match(validateLabel({ ...base, outcome: 'success', basis: 'qa', citations: [s.lastAssistant.ref] }, s).join(), /human follow-up/, 'relabelling a completion claim as qa fails');
-  assert.match(validateLabel({ ...base, outcome: 'success', basis: 'user', citations: [fu, 'Intend.md'] }, s).join(), /not present/, 'free-form citations are rejected');
+  assert.match(validateLabel({ ...base, outcome: 'success', basis: 'user', citations: [fu, 'notes.md'] }, s).join(), /not present/, 'free-form citations are rejected');
   assert.match(validateLabel({ ...base, outcome: 'success', basis: 'user', citations: [fu], reviewed: false }, s).join(), /reviewed/);
   assert.deepEqual(validateLabel({ ...base, outcome: 'success', basis: 'user', citations: [fu] }, s), []);
   assert.match(validateLabel({ ...base, outcome: 'success', basis: 'user', citations: [fu], attribution: { ...opus, model: 'claude-sonnet-5-5' } }, s).join(), /does not match/);
@@ -363,10 +363,10 @@ test('feedback intake validates, verifies with citations and imports runtime rep
   assert.ok(!obs.some(o => o.key === 'runtime-task:t1'), 'unverified runtime reports are not counted');
 });
 
-test('known Publisher case separates the authorizing user from transcript instructions', () => {
+test('known Exporter case separates the authorizing user from transcript instructions', () => {
   const home = fixtureHome();
   const file = join(home, 'known-cases.json');
-  writeFileSync(file, JSON.stringify([{ id: 'publisher-destructive-recovery', key: 'antigravity:publisher-fixture', expected: 'failure', reportedBy: 'fixture' }]));
+  writeFileSync(file, JSON.stringify([{ id: 'exporter-destructive-recovery', key: 'antigravity:exporter-fixture', expected: 'failure', reportedBy: 'fixture' }]));
   const [kc] = loadKnownCases(file);
   assert.deepEqual(loadKnownCases(join(home, 'absent.json')), [], 'no private config means no known cases');
   writeFileSync(join(home, 'bad.json'), JSON.stringify([{ id: 'x' }]));
@@ -409,10 +409,10 @@ test('CLI end to end: analyze → label → feedback → compile → redacted re
   const priv = join(home, 'private');
   const common = ['--home', home, '--private-dir', priv];
   mkdirSync(priv, { recursive: true });
-  writeFileSync(join(priv, 'known-cases.json'), JSON.stringify([{ id: 'publisher-destructive-recovery', key: 'antigravity:publisher-fixture', expected: 'failure', reportedBy: 'fixture review' }]));
+  writeFileSync(join(priv, 'known-cases.json'), JSON.stringify([{ id: 'exporter-destructive-recovery', key: 'antigravity:exporter-fixture', expected: 'failure', reportedBy: 'fixture review' }]));
   const a = cli(['analyze', '--window', '24h', '--now', iso(NOW), ...common]);
   assert.equal(a.eligible, 3);
-  assert.deepEqual(a.knownCases, [{ id: 'publisher-destructive-recovery', found: true, eligible: true }]);
+  assert.deepEqual(a.knownCases, [{ id: 'exporter-destructive-recovery', found: true, eligible: true }]);
   assert.ok(a.coverage >= 0.2);
   const review = JSON.parse(readFileSync(join(priv, 'runs', a.run, 'review.json'), 'utf8'));
   const claude = review.labels.find(l => l.key === 'claude:sess-claude-1');
@@ -422,10 +422,10 @@ test('CLI end to end: analyze → label → feedback → compile → redacted re
   cli(['review', 'label', '--run', a.run, '--evidence', claude.evidenceId, '--outcome', 'success', '--basis', 'user', '--citations', s.followUps[0].ref, '--task-type', 'local-code-change', '--reviewer', 'test', ...common]);
   const status = cli(['review', 'status', '--run', a.run, ...common]);
   assert.deepEqual([status.reviewed, status.success, status.problems.length], [1, 1, 0]);
-  const fb = cli(['feedback', 'add', '--ref', 'antigravity:publisher-fixture', '--outcome', 'failure', '--source', 'user', '--cli', 'antigravity', '--model', 'gemini-pro-agent', '--task-type', 'cross-module-change', '--authorized-by', 'transcript', '--note', 'private text', ...common]);
+  const fb = cli(['feedback', 'add', '--ref', 'antigravity:exporter-fixture', '--outcome', 'failure', '--source', 'user', '--cli', 'antigravity', '--model', 'gemini-pro-agent', '--task-type', 'cross-module-change', '--authorized-by', 'transcript', '--note', 'private text', ...common]);
   assert.equal(fb.sessionResolved, true);
   assert.throws(() => cli(['feedback', 'verify', '--id', fb.added, '--citations', 'step99', ...common]), 'unknown ref');
-  assert.throws(() => cli(['feedback', 'verify', '--id', fb.added, '--citations', 'Intend.md', ...common]), 'free-form string');
+  assert.throws(() => cli(['feedback', 'verify', '--id', fb.added, '--citations', 'notes.md', ...common]), 'free-form string');
   assert.throws(() => cli(['feedback', 'verify', '--id', fb.added, '--citations', 'step3', ...common]), 'a command is not a user report');
   const ok = cli(['feedback', 'verify', '--id', fb.added, '--citations', 'step2,step3', '--reviewer', 'test', ...common]);
   assert.deepEqual(ok.attribution, { cli: 'antigravity', model: 'gemini-pro-agent', effort: null });
@@ -441,9 +441,9 @@ test('CLI end to end: analyze → label → feedback → compile → redacted re
   const out = join(home, 'report.md');
   cli(['report', '--out', out, ...common]);
   const md = readFileSync(out, 'utf8');
-  assert.match(md, /Known case: publisher-destructive-recovery/);
+  assert.match(md, /Known case: exporter-destructive-recovery/);
   assert.match(md, /reported in fixture review/);
-  assert.doesNotMatch(md, /sess-claude-1|publisher-fixture|private text|parser\.js|\/w\/app/, 'no raw ids, prompts, notes or paths');
+  assert.doesNotMatch(md, /sess-claude-1|exporter-fixture|private text|parser\.js|\/w\/app/, 'no raw ids, prompts, notes or paths');
 });
 
 test('shipped analyzer sources hold no raw session identifiers', () => {

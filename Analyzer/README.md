@@ -55,6 +55,6 @@ node Analyzer/cli.mjs report                            # docs/routing-evidence.
   `evidenceAt` = the oldest counted outcome's time (never the compile time); outcomes older than 30
   days are dropped. Aliases and unknown efforts (except AGY names that encode effort) never
   validate. `docs/routing-policy.json` is never written by the analyzer.
-- Known cases (sessions re-verified every run, e.g. the Publisher incident) are listed only in
+- Known cases (sessions re-verified every run, e.g. a destructive-recovery incident) are listed only in
   `Analyzer/private/known-cases.json`: `[{ "id", "key": "cli:sessionId", "expected", "taskType",
   "reportedBy" }]`. The public code holds the generic verifier only.

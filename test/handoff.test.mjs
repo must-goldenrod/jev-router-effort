@@ -16,9 +16,9 @@ const CATALOG = {
 };
 const TARGET = { cli: "codex", model: "gpt-6-astra", effort: "xhigh" };
 const PACKET = {
-  objective: "Fix the publisher's retry loop",
+  objective: "Fix the exporter's retry loop",
   constraints: ["Keep the public API", "No destructive git commands"],
-  affectedFiles: ["src/publisher.mjs"],
+  affectedFiles: ["src/exporter.mjs"],
   verification: ["npm test"],
   failures: ["QA: retry loop posts twice"],
 };
@@ -125,7 +125,7 @@ test("happy path uses the existing workspace, waits for readiness and proves the
   assert.ok(packet.includes(`check_target.py --cli codex --model gpt-6-astra --effort xhigh --router ${fileURLToPath(new URL('../', import.meta.url))}`));
   assert.match(packet, /no orchestration dispatch: there is no worker_done/);
   assert.deepEqual(receipt.executor, { agent: "jev-codex-executor", definition: join(HOME, ".codex", "skills", "jev-router-improvement", "references", "execution.md") });
-  assert.match(packet, /Fix the publisher's retry loop/);
+  assert.match(packet, /Fix the exporter's retry loop/);
   assert.match(packet, /QA: retry loop posts twice/);
   assert.match(packet, new RegExp(checkpoint.ref));
   assert.equal(git(dir, "status", "--porcelain"), "?? wip.txt", "receipts and packets live under .git, not the worktree");
@@ -298,7 +298,7 @@ test("a concurrent writer for the same task is refused", async (t) => {
 test("the runtime packet keeps objective, current request, history, failures and profile", () => {
   const options = { cwd: "/w", taskId: "t", target: TARGET, checkpoint: { commit: "c".repeat(40), ref: "refs/jev/checkpoints/t/x" } };
   const runtime = {
-    objective: "Ship the publisher fix",
+    objective: "Ship the exporter fix",
     recentRequests: ["first ask", "second ask"],
     failures: [{ text: "QA: posts twice", source: "user-or-qa-report" }, "plain failure"],
     taskType: "cross-module-change",
@@ -313,7 +313,7 @@ test("the runtime packet keeps objective, current request, history, failures and
   };
   const doc = renderPacket(runtime, options);
   for (const text of [
-    "Ship the publisher fix", "now also fix the retry", "- first ask", "- second ask", "- [user-or-qa-report] QA: posts twice",
+    "Ship the exporter fix", "now also fix the retry", "- first ask", "- second ask", "- [user-or-qa-report] QA: posts twice",
     "- plain failure", "task type: cross-module-change", "complex: true", "signals: cross-module, state-transition",
     "requested from: antigravity", "evidence rule: rule-7", "task state file: /state/task.json", "- reviewer: qa",
   ]) {

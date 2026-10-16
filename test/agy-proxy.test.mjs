@@ -465,7 +465,7 @@ test("an image turn with 200+ chars of text routes without describing; the path 
   t.after(proxy.close);
   await post(proxy.port, "/v1internal:fetchAvailableModels", {});
 
-  const long = "the publisher menu overlaps the schedule calendar ".repeat(5).trim();
+  const long = "the exporter menu overlaps the schedule calendar ".repeat(5).trim();
   assert.ok(long.length >= 200);
   await post(proxy.port, "/v1internal:streamGenerateContent?alt=sse", turn(`${shot} ${long}`));
   assert.equal(describeCalls(upstream.seen).length, 0, "enough text: no description call");

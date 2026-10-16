@@ -16,7 +16,7 @@ import { startCodexProxy, codexConversationKey } from '../src/codex-proxy.mjs';
 import { startGlmProxy } from '../src/glm-proxy.mjs';
 // Korean keywords are written as \u escapes so the source stays English-only.
 
-const original = '\uAE30\uC874 \uC571\uC5D0 Publisher \uD50C\uB7EC\uADF8\uC778\uC744 \uCD94\uAC00\uD574. \uC2B9\uC778\uACFC \uAC70\uC808 \uD6C4 \uC790\uB3D9 \uBC1C\uD589\uD558\uACE0 \uCE98\uB9B0\uB354\uC5D0 \uC2A4\uCF00\uC904\uC744 \uBCF4\uC5EC\uC918. \uC2AC\uB799 \uBC18\uC751\uC740 \uB9E4\uC77C \uBD84\uC11D\uD558\uACE0 3\uC77C \uB4A4 \uBA48\uCDB0.';
+const original = '\uAE30\uC874 \uC571\uC5D0 Exporter \uD50C\uB7EC\uADF8\uC778\uC744 \uCD94\uAC00\uD574. \uC2B9\uC778\uACFC \uAC70\uC808 \uD6C4 \uC790\uB3D9 \uBC1C\uD589\uD558\uACE0 \uCE98\uB9B0\uB354\uC5D0 \uC2A4\uCF00\uC904\uC744 \uBCF4\uC5EC\uC918. \uC2AC\uB799 \uBC18\uC751\uC740 \uB9E4\uC77C \uBD84\uC11D\uD558\uACE0 3\uC77C \uB4A4 \uBA48\uCDB0.';
 const models = [{ id: 'cheap', tier: 'haiku', efforts: ['low'] }, { id: 'strong-v1', tier: 'opus', efforts: ['high'] }];
 const answer = { choice: 'cheap', confidence: 0.8, effort: 'low' };
 const now = Date.now();
@@ -33,7 +33,7 @@ function fixture(t, options = {}) {
   return { cwd, config, runtime: createTaskRuntime({ cli: 'claude', cwd, route: async () => answer, ...options, config }) };
 }
 
-test('Publisher is a coupled mutating task; long factual prose alone is not', () => {
+test('Exporter is a coupled mutating task; long factual prose alone is not', () => {
   assert.equal(taskProfile(original).taskType, 'cross-module-change');
   assert.equal(taskProfile(original).complex, true);
   assert.equal(taskProfile('Summarize this article. '.repeat(100)).complex, false);

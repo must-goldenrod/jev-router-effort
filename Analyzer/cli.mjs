@@ -207,7 +207,7 @@ function reviewLabel(args) {
   return { run: args.run, labeled: done };
 }
 
-/** 48h is used only when the reviewed 24h evidence is insufficient (Intend.md lifecycle). */
+/** 48h is used only when the reviewed 24h evidence is insufficient. */
 function expandCheck(args) {
   const p = paths(args);
   const run = loadRun(p, args.run);

@@ -4,8 +4,8 @@ import { readJson } from './util.mjs';
 // Known cases are hypotheses checked against the raw source on every run; nothing is asserted
 // unless the matching evidence is found again in the local transcript. The case list names real
 // sessions, so it lives only in Analyzer/private/known-cases.json (Git-ignored), e.g.
-// [{ "id": "publisher-destructive-recovery", "key": "antigravity:<conversation id>",
-//    "expected": "failure", "taskType": "cross-module-change", "reportedBy": "Intend.md incident review" }]
+// [{ "id": "exporter-destructive-recovery", "key": "antigravity:<conversation id>",
+//    "expected": "failure", "taskType": "cross-module-change", "reportedBy": "maintainer incident review" }]
 
 export function loadKnownCases(file) {
   const cases = readJson(file, []);

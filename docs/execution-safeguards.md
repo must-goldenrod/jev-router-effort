@@ -1,8 +1,7 @@
 # Execution safeguards: checkpoint and Orca handoff
 
-Contract for `src/checkpoint.mjs` and `src/handoff.mjs`. Root `Intend.md` items 4 and 5 are the
-source of intent: a Git checkpoint commit before complex work, and cross-CLI execution through
-Orca with one writer per task.
+Contract for `src/checkpoint.mjs` and `src/handoff.mjs`: a Git checkpoint commit before complex
+work, and cross-CLI execution through Orca with one writer per task.
 
 ## Checkpoint: `ensureCheckpoint`
 

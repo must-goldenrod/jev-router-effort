@@ -226,11 +226,11 @@ test('Codex first objective excludes bootstrap AGENTS instructions while receive
   const body = { input: [
     { role: 'user', content: '# AGENTS.md instructions for /workspace\n<INSTRUCTIONS>Preserve unrelated edits.</INSTRUCTIONS>' },
     { role: 'user', content: '<environment_context>cwd=/workspace</environment_context>' },
-    { role: 'user', content: 'Implement a publisher function' },
-    { role: 'assistant', content: 'Implemented src/publisher.mjs' },
+    { role: 'user', content: 'Implement a exporter function' },
+    { role: 'assistant', content: 'Implemented src/exporter.mjs' },
     { role: 'user', content: 'Review it against acceptance criteria' },
   ] };
-  assert.deepEqual(codexTaskHistory(body), ['Implement a publisher function', 'Review it against acceptance criteria']);
+  assert.deepEqual(codexTaskHistory(body), ['Implement a exporter function', 'Review it against acceptance criteria']);
   assert.ok(JSON.stringify(codexHandoffContext(body)).includes('Preserve unrelated edits'));
 });
 
