@@ -1,0 +1,19 @@
+# Implementation directive
+
+Read `Intend.md`. Work in this checkout; preserve unrelated files and other sessions' edits. The initial workspace was checkpointed at `refs/jev/checkpoints/20260930-bootstrap` (`6b932c984a7498275fe0f0a0585af940a4a42429`) without changing HEAD, staging or working files.
+
+## Work and ownership
+
+1. **Harness and agents:** maintain the improvement process here; scaffold global `jev-router-improver`, `jev-claude-executor`, `jev-codex-executor` in your own agent-definitions repository. Definitions and descriptions obey the compact build contract, reference maintained procedures, undergo independent hash-bound review, and deploy only these scoped additions. The agent definition worker owns these files and the agent issue report. No unrelated release of that repository.
+2. **Analyzer:** implement collection, deterministic stratified sampling and review packets for 24/48h, plus feedback intake and policy compilation. Review at least 20% of eligible sessions, separate routed from unrouted, and successes/failures/unknown. Use explicit source evidence; generic text matching generates candidates, never verified quality labels. Keep transcripts/private extracts out of commits. The analysis worker owns `Analyzer/`, `test/analyzer.test.mjs`, and `docs/routing-evidence.md`.
+3. **Execution:** implement a preflight checkpoint API and Orca handoff API with injection-friendly dependencies and meaningful failure tests. Use real durable Git commits and refs, preserve the user's index/HEAD, explicitly report excluded/ignored files and refuse hazardous partial checkpoints. No automatic worktrees or rollback. The execution worker owns `src/checkpoint.mjs`, `src/handoff.mjs`, their tests and execution contract documentation.
+4. **Runtime integration:** coordinator owns task state, evidence policy, CLI adapters, feedback integration, launch configuration, root contracts, policy schema, packaging and overall verification. Model compatibility and manual choices remain respected. Persist compact task state and bounded local decision evidence. A pending external handoff suppresses local execution and retry duplicates; inadequate external evidence retains cold-start routing.
+5. **Validation and release:** offline tests for cold start, unknown evidence, task continuation, feedback, exact-model/effort eligibility, local compatibility, checkpoint failure and duplicate handoffs. Run repository tests, scoped agent review and a harmless Orca delivery smoke test; no destructive incident replay. Record limitations rather than claim comparative model improvement without enough outcomes. Coordinator commits each completed issue's owned paths; workers in this checkout do not commit.
+
+## Policy contract (v1)
+
+`docs/routing-policy.json` has `schemaVersion: 1`, `version`, `generatedAt`, `rules: []`. Each rule has `id`, `taskType`, `cli` (`claude|codex|antigravity|glm`), exact `model`, `effort` (string or null), `outcome` (`prefer|avoid`), `sampleSize`, `successes`, `failures`, `unknown`, `evidenceIds`, `status` (`candidate|validated`), and optional `reason`. No rule is validated solely because the assistant said complete; verified labels require cited user/QA or executable evidence. Minimum-support eligibility and expiry are implemented explicitly. Personal data is not bundled into the distributable default policy.
+
+## Agent execution contract
+
+The improvement owner accepts a failure report/session reference and owns evidence → dated issue → reviewed change → tests → commit → result. The Claude/Codex executor accepts one bounded handoff packet and selects only catalog-supported model/effort; it reports artifacts, checks and unresolved work. Cross-CLI handoff uses the same workspace with single-writer authority and the preflight checkpoint receipt. User/QA reports can be submitted through the local feedback CLI; unattended external messaging and a new cron are out of scope.
