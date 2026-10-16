@@ -8,6 +8,7 @@ import { startProxy } from "../src/proxy.mjs";
 import { AUTO_MODEL } from "../src/config.mjs";
 import { readSavedModel, restoreSavedModel } from "../src/settings.mjs";
 import { LOG_FILE } from "../src/log.mjs";
+import { childEnv } from "../src/child-env.mjs";
 import { writeStatusFile } from "../src/status.mjs";
 import { userEnvFiles } from "../src/codex-cli.mjs";
 import { executionWorkspace } from '../src/execution-workspace.mjs';
@@ -108,7 +109,7 @@ function resolveClaude() {
 const args = process.argv.slice(2);
 const workspace = executionWorkspace('claude', args);
 args.push("--add-dir", ROOT);
-const env = { ...process.env };
+const env = childEnv();
 
 const claude = resolveClaude();
 if (!claude) {

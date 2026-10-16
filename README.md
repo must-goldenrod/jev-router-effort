@@ -407,3 +407,5 @@ before opening a pull request. For changes to the original project, use the
 [MIT](LICENSE). This edition is maintained for non-commercial purposes, but the license
 does not restrict commercial use. Keep the original copyright and license notice when
 redistributing the code.
+
+The upstream repository and base commit are recorded in [UPSTREAM.md](UPSTREAM.md).

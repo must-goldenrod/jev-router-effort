@@ -18,7 +18,7 @@ function seed(stateDir, { dataset = "live", now = Date.now } = {}) {
   const turns = [
     { skills: ["hr-make-jd"], agent: "hr-jd-writer", model: "claude-sonnet-5-5", ms: 300 },
     { skills: [], agent: null, model: "claude-haiku-4-5-20251001", ms: 200 },
-    { skills: ["nss-report-daily"], agent: null, model: "claude-sonnet-5-5", ms: 500, reason: "jev-unavailable" },
+    { skills: ["ops-report-daily"], agent: null, model: "claude-sonnet-5-5", ms: 500, reason: "jev-unavailable" },
   ];
   for (const [i, turn] of turns.entries()) {
     const requestId = log.newRequestId();
@@ -67,7 +67,7 @@ test("labels compute per-dimension accuracy, misses, unnecessary picks and no-se
   label(ids[0], "skills", { expected: "hr-make-jd" });
   label(ids[0], "agent", { expected: "none" });            // agent was unnecessary
   label(ids[1], "skills", { expected: "none" });           // correct no-selection
-  label(ids[2], "skills", { expected: "sut-token-ledger" }); // wrong target: one miss, one unnecessary
+  label(ids[2], "skills", { expected: "fin-asset-ledger" }); // wrong target: one miss, one unnecessary
   label(ids[0], "task", { outcome: "success" });
   label(ids[1], "task", { outcome: "unknown" });
   addLabel({ stateDir, requestId: ids[2], dimension: "task", outcome: "failure", source: "executable", evidence: "npm test exit 1" });

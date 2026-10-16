@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { AGY_AUTO_MODEL, AGY_DEFAULT_UPSTREAM, startAgyProxy } from "./agy-proxy.mjs";
 import { loadEnv } from "./codex-cli.mjs";
 import { executionWorkspace } from './execution-workspace.mjs';
+import { childEnv } from "./child-env.mjs";
 
 // Subcommands manage AGY itself rather than running a conversation, so they need no proxy.
 const SUBCOMMANDS = new Set([
@@ -40,7 +41,7 @@ export function antiFlag(args, name) {
  */
 export const antiArgs = (args) => (antiFlag(args, "--model") ? args : ["--model", AGY_AUTO_MODEL, ...args]);
 
-function execute(command, args, env = process.env) {
+function execute(command, args, env = childEnv()) {
   return new Promise((resolve) => {
     const child = spawn(command.file, args, { stdio: "inherit", shell: command.shell, env });
     child.on("error", (error) => {
@@ -76,10 +77,9 @@ export async function runAnti(args = process.argv.slice(2)) {
     statusId: `agy-${process.pid}`,
   });
   try {
-    return await execute(command, antiArgs(args), {
-      ...process.env,
+    return await execute(command, antiArgs(args), childEnv(process.env, {
       CLOUD_CODE_URL: `http://127.0.0.1:${proxy.port}`,
-    });
+    }));
   } finally {
     proxy.close();
   }

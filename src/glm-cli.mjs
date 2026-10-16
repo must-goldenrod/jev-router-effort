@@ -5,6 +5,7 @@ import { resolveAnti } from "./anti-cli.mjs";
 import { loadEnv } from "./codex-cli.mjs";
 import { GLM_DEFAULT_UPSTREAM, startGlmProxy } from "./glm-proxy.mjs";
 import { executionWorkspace } from './execution-workspace.mjs';
+import { childEnv } from "./child-env.mjs";
 
 /**
  * Prefers the `glm` launcher, which reads the z.ai key from the Keychain, over bare `zai`.
@@ -27,7 +28,7 @@ const setTitle = (text) => {
 
 export const glmTitle = ({ model, effort }) => `[Jev] ${model}${effort ? ` · ${effort}` : ""}`;
 
-function execute(command, args, env = process.env) {
+function execute(command, args, env = childEnv()) {
   return new Promise((resolve) => {
     const child = spawn(command.file, args, { stdio: "inherit", shell: command.shell, env });
     child.on("error", (error) => {
@@ -62,7 +63,7 @@ export async function runGlm(args = process.argv.slice(2)) {
   });
   setTitle("[Jev] GLM router");
   try {
-    return await execute(command, args, { ...process.env, ZAI_BASE_URL: `http://127.0.0.1:${proxy.port}` });
+    return await execute(command, args, childEnv(process.env, { ZAI_BASE_URL: `http://127.0.0.1:${proxy.port}` }));
   } finally {
     setTitle("");
     proxy.close();

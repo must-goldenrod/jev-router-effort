@@ -26,10 +26,10 @@ import { startCodexProxy } from "../src/codex-proxy.mjs";
 const SKILLS = {
   "hr-make-jd": "HR\uC758 Make JD \uBA54\uBAA8\uB85C JD \uCD08\uC548\uC744 \uC791\uC131\uD55C\uB2E4. \uC5ED\uD560·\uC131\uACFC·\uC5C5\uBB34·\uC694\uAC74\uC744 \uC6D0\uBB38\uC5D0\uC11C \uB3C4\uCD9C\uD55C\uB2E4. \uD2B8\uB9AC\uAC70\uB294 Make JD, JD \uCD08\uC548, \uCC44\uC6A9 \uC9C1\uBB34\uAE30\uC220\uC11C.",
   "hr-pip": "PIP(\uC131\uACFC \uAC1C\uC120 \uD504\uB85C\uADF8\uB7A8) \uBB38\uC11C\uB97C \uB9CC\uB4E0\uB2E4. \uD2B8\uB9AC\uAC70 - PIP \uBB38\uC11C, \uC131\uACFC \uAC1C\uC120 \uD504\uB85C\uADF8\uB7A8.",
-  "nss-report-daily": "NSS \uBAA8\uB2C8\uD130 \uC77C\uC77C \uBCF4\uACE0\uC11C\uB97C \uC0DD\uC131\uD55C\uB2E4. \uD2B8\uB9AC\uAC70 - NSS \uC77C\uC77C \uBCF4\uACE0, \uBAA8\uB2C8\uD130 \uD14C\uC774\uBE14.",
-  "sut-token-ledger": "SUT \uD1A0\uD070 \uC6D0\uC7A5 \uB300\uC0AC \uB9AC\uD3EC\uD2B8\uB97C \uB9CC\uB4E0\uB2E4. \uD2B8\uB9AC\uAC70 - SUT \uC6D0\uC7A5, SUT \uB300\uC0AC.",
+  "ops-report-daily": "OPS \uBAA8\uB2C8\uD130 \uC77C\uC77C \uBCF4\uACE0\uC11C\uB97C \uC0DD\uC131\uD55C\uB2E4. \uD2B8\uB9AC\uAC70 - OPS \uC77C\uC77C \uBCF4\uACE0, \uBAA8\uB2C8\uD130 \uD14C\uC774\uBE14.",
+  "fin-asset-ledger": "FIN \uC790\uC0B0 \uC6D0\uC7A5 \uB300\uC0AC \uB9AC\uD3EC\uD2B8\uB97C \uB9CC\uB4E0\uB2E4. \uD2B8\uB9AC\uAC70 - FIN \uC6D0\uC7A5, FIN \uB300\uC0AC.",
   "mpc-ir-deck": "MPC \uD22C\uC790\uC790 IR \uB371 \uCD08\uC548\uC744 \uB9CC\uB4E0\uB2E4. \uD2B8\uB9AC\uAC70 - IR \uB371, \uD22C\uC790 \uC124\uBA85 \uC790\uB8CC.",
-  "nss-report-daily-v1-archived": "\uC608\uC804 NSS \uC77C\uC77C \uBCF4\uACE0 \uC0DD\uC131\uAE30. \uD2B8\uB9AC\uAC70 - NSS \uC77C\uC77C \uBCF4\uACE0.",
+  "ops-report-daily-v1-archived": "\uC608\uC804 OPS \uC77C\uC77C \uBCF4\uACE0 \uC0DD\uC131\uAE30. \uD2B8\uB9AC\uAC70 - OPS \uC77C\uC77C \uBCF4\uACE0.",
 };
 const AGENTS = {
   "hr-jd-writer": "HR JD \uCD08\uC548\uC744 hr-make-jd \uC2A4\uD0AC\uB85C \uC791\uC131\uD558\uB294 \uC791\uC5C5\uC790. JD \uCD08\uC548 \uC791\uC131 \uC694\uCCAD\uC744 \uC704\uC784\uBC1B\uB294\uB2E4.",
@@ -90,13 +90,13 @@ test("HR request from a non-HR folder selects hr-make-jd and the classifier sees
   assert.equal(decision.agent.reason, "jev-none");
 });
 
-test("department prefixes separate NSS, SUT and MPC candidates", (t) => {
+test("department prefixes separate OPS, FIN and MPC candidates", (t) => {
   const { catalog } = makeTree(t);
   const top = (p) => shortlist(p, catalog.skills, { limit: 3 })[0]?.candidate.name;
-  assert.equal(top("NSS \uC77C\uC77C \uBCF4\uACE0 \uB9CC\uB4E4\uC5B4\uC918"), "nss-report-daily");
-  assert.equal(top("SUT \uC6D0\uC7A5 \uB300\uC0AC \uB9AC\uD3EC\uD2B8 \uBD80\uD0C1\uD574"), "sut-token-ledger");
+  assert.equal(top("OPS \uC77C\uC77C \uBCF4\uACE0 \uB9CC\uB4E4\uC5B4\uC918"), "ops-report-daily");
+  assert.equal(top("FIN \uC6D0\uC7A5 \uB300\uC0AC \uB9AC\uD3EC\uD2B8 \uBD80\uD0C1\uD574"), "fin-asset-ledger");
   assert.equal(top("MPC IR \uB371 \uCD08\uC548 \uB9CC\uB4E4\uC5B4\uC918"), "mpc-ir-deck");
-  assert.ok(!shortlist("NSS \uC77C\uC77C \uBCF4\uACE0 \uB9CC\uB4E4\uC5B4\uC918", catalog.skills, { limit: 6 }).some((s) => s.candidate.name.endsWith("archived")));
+  assert.ok(!shortlist("OPS \uC77C\uC77C \uBCF4\uACE0 \uB9CC\uB4E4\uC5B4\uC918", catalog.skills, { limit: 6 }).some((s) => s.candidate.name.endsWith("archived")));
 });
 
 test("a general question needs no skill and no agent; the classifier is not asked", (t) => {
@@ -148,12 +148,12 @@ test("same-name candidates are distinguished by path and hash; one linked file i
 
 test("ambiguous and low-confidence answers fall back to no selection with a reason", (t) => {
   const { catalog } = makeTree(t);
-  const prompt = "NSS \uC77C\uC77C \uBCF4\uACE0 \uB9CC\uB4E4\uC5B4\uC918";
-  const ambiguous = decideFor(catalog, prompt, { skill: answer("nss-report-daily", 0.45, { "nss-report-daily": 0.45, "sut-token-ledger": 0.4, none: 0.15 }) }).decision;
+  const prompt = "OPS \uC77C\uC77C \uBCF4\uACE0 \uB9CC\uB4E4\uC5B4\uC918";
+  const ambiguous = decideFor(catalog, prompt, { skill: answer("ops-report-daily", 0.45, { "ops-report-daily": 0.45, "fin-asset-ledger": 0.4, none: 0.15 }) }).decision;
   assert.equal(ambiguous.skills.reason, "ambiguous");
   assert.equal(ambiguous.needsConfirmation, true);
   assert.equal(ambiguous.skills.selected.length, 0);
-  const low = decideFor(catalog, prompt, { skill: answer("nss-report-daily", 0.4, { "nss-report-daily": 0.4, none: 0.35, "sut-token-ledger": 0.05 }) }).decision;
+  const low = decideFor(catalog, prompt, { skill: answer("ops-report-daily", 0.4, { "ops-report-daily": 0.4, none: 0.35, "fin-asset-ledger": 0.05 }) }).decision;
   assert.equal(low.skills.reason, "low-confidence");
   const unavailable = decideFor(catalog, prompt, null).decision;
   assert.equal(unavailable.skills.reason, "jev-unavailable");
@@ -239,7 +239,7 @@ test("Claude proxy: one turn links input, candidates, decision, application, ser
     capabilityAnswers: { skill: answer("hr-make-jd", 0.85), agent: answer("hr-jd-writer", 0.7) } }; };
   const proxy = await startProxy({ upstreamURL: base, route, runtimeConfig: config, cwd: tree.cwd });
   t.after(proxy.close);
-  const prompt = "JD \uCD08\uC548 \uC791\uC131\uD574\uC918. \uCC38\uACE0 token=abcdef123456 \uC740 \uBB34\uC2DC";
+  const prompt = "JD \uCD08\uC548 \uC791\uC131\uD574\uC918. \uCC38\uACE0 token=sentinel-value-x \uC740 \uBB34\uC2DC";
   const body = { model: "jev-router", tools: [{ name: "Read", input_schema: { type: "object" } }], messages: [{ role: "user", content: prompt }] };
   const res = await fetch(`http://127.0.0.1:${proxy.port}/v1/messages`, { method: "POST", body: JSON.stringify(body) });
   const text = await res.text();
@@ -253,7 +253,7 @@ test("Claude proxy: one turn links input, candidates, decision, application, ser
   assert.deepEqual(events.map((e) => e.type), ["request", "candidates", "decision", "application", "served"]);
   const [request, , decision, application, served] = events;
   assert.ok(request.taskId && request.conversationId && request.routerVersion && request.catalog.hash);
-  assert.ok(!request.input.text.includes("abcdef123456"), "secret masked");
+  assert.ok(!request.input.text.includes("sentinel-value-x"), "secret masked");
   assert.equal(request.input.sha256.length, 64);
   assert.equal(decision.routerModel, "test-router");
   assert.deepEqual(decision.usage, { inputTokens: 100, outputTokens: 5 });
