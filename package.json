@@ -5,10 +5,10 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/globalmpc/jev-router-private.git"
+    "url": "git+https://github.com/globalmpc/jev-router-effort.git"
   },
-  "homepage": "https://github.com/globalmpc/jev-router-private#readme",
-  "bugs": "https://github.com/globalmpc/jev-router-private/issues",
+  "homepage": "https://github.com/globalmpc/jev-router-effort#readme",
+  "bugs": "https://github.com/globalmpc/jev-router-effort/issues",
   "bin": {
     "jev": "bin/jev.mjs",
     "jev-a": "bin/jev-anti.mjs",

@@ -137,7 +137,7 @@ if (process.env.JEV_API_KEY || process.env.TYPESAFE_API_KEY) {
 } else {
   process.stderr.write(
     `[jev] no JEV_API_KEY found - starting Claude Code without routing\n` +
-      `[jev] set it in ${join(homedir(), ".jev-claude.env")} to enable routing\n`,
+      `[jev] set it in ${join(homedir(), ".jev-router.env")} to enable routing\n`,
   );
 }
 

@@ -16,7 +16,7 @@ function seed(stateDir, { dataset = "live", now = Date.now } = {}) {
   const log = createRoutingLog({ stateDir, dataset, now });
   const ids = [];
   const turns = [
-    { skills: ["hr-make-jd"], agent: "hr-jd-writer", model: "claude-sonnet-5-5", ms: 300 },
+    { skills: ["hr-write-jd"], agent: "hr-jd-drafter", model: "claude-sonnet-5-5", ms: 300 },
     { skills: [], agent: null, model: "claude-haiku-4-5-20251001", ms: 200 },
     { skills: ["ops-report-daily"], agent: null, model: "claude-sonnet-5-5", ms: 500, reason: "jev-unavailable" },
   ];
@@ -64,7 +64,7 @@ test("labels compute per-dimension accuracy, misses, unnecessary picks and no-se
   const stateDir = dir(t);
   const { ids } = seed(stateDir);
   const label = (requestId, dimension, extra) => addLabel({ stateDir, requestId, dimension, source: "user", evidence: "user confirmed in chat", ...extra });
-  label(ids[0], "skills", { expected: "hr-make-jd" });
+  label(ids[0], "skills", { expected: "hr-write-jd" });
   label(ids[0], "agent", { expected: "none" });            // agent was unnecessary
   label(ids[1], "skills", { expected: "none" });           // correct no-selection
   label(ids[2], "skills", { expected: "fin-asset-ledger" }); // wrong target: one miss, one unnecessary

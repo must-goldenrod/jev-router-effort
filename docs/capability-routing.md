@@ -87,7 +87,7 @@ Retention: run `jev-maintain routing-prune` (default `retentionDays`, 30). It re
 ## Labels and report
 
 ```sh
-jev-maintain routing-label --request ID --dimension skills --expected hr-make-jd --source user --evidence "user: correct skill"
+jev-maintain routing-label --request ID --dimension skills --expected hr-write-jd --source user --evidence "user: correct skill"
 jev-maintain routing-label --request ID --dimension agent --expected none --source qa --evidence "QA note 2026-10-04"
 jev-maintain routing-label --request ID --dimension task --outcome failure --source executable --evidence "npm test exit 1"
 jev-maintain routing-report --since 7d --dataset live

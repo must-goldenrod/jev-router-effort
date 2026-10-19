@@ -51,6 +51,9 @@ Requires Node.js 20.12+ and at least one supported CLI:
 The npm package `jev-router` belongs to the original project. To run the changes in this
 repository, install from the local repository below.
 
+Install only one of the two. Both register the same command names (`jev-claude`, `jev-codex`,
+`jev-explain`), so the one installed last wins.
+
 ```bash
 npm install -g jev-router
 echo "JEV_API_KEY=..." > ~/.jev-router.env
@@ -59,8 +62,8 @@ echo "JEV_API_KEY=..." > ~/.jev-router.env
 ### 2. Local repository
 
 ```bash
-git clone https://github.com/globalmpc/jev-router-private.git
-cd jev-router-private
+git clone https://github.com/globalmpc/jev-router-effort.git
+cd jev-router-effort
 npm install
 npm link
 echo "JEV_API_KEY=..." > ~/.jev-router.env
@@ -350,6 +353,12 @@ ids are used only until the CLI fetches its catalog.
 
 ## Compatibility notes
 
+- Core routing needs Node.js 20.12+. The `jev-maintain` evidence commands need Node.js 22.15+
+  for `node:sqlite`; on older versions they exit with an error and routing is unaffected.
+- Handoff to another CLI is part of the opt-in improvement runtime and needs the
+  [Orca](https://github.com/stablyai/orca) CLI. Ordinary per-turn routing does not use Orca.
+- Orca account homes and the Keychain lookup for a shared Jev key are macOS-specific. On
+  other systems set `JEV_API_KEY` in `~/.jev-router.env` or the environment.
 - Claude Code needs schema normalisation for older MCP JSON Schema fields when a custom base
   URL is active.
 - Claude request fields unsupported by a routed tier, such as adaptive thinking on Haiku,
@@ -397,7 +406,7 @@ MIT license, without warranty.
 
 ## Contributing
 
-Report issues and propose changes in [this edition's issue tracker](https://github.com/globalmpc/jev-router-private/issues).
+Report issues and propose changes in [this edition's issue tracker](https://github.com/globalmpc/jev-router-effort/issues).
 Include your CLI version, steps to reproduce, and logs with secrets removed. Run `npm test`
 before opening a pull request. For changes to the original project, use the
 [upstream issue tracker](https://github.com/gargpratyush/jev-router/issues).

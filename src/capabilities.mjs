@@ -25,7 +25,7 @@ export const CAPABILITY_THRESHOLDS = {
 };
 
 /**
- * Department prefixes identify ownership in a name (`hr-make-jd`). The prompt's folder is
+ * Department prefixes identify ownership in a name (`hr-write-jd`). The prompt's folder is
  * context only; a JD request from any folder can still reach an accessible `hr-` skill.
  * Aliases are deliberately few; extend them in runtime config, not by guessing here.
  */
