@@ -1,5 +1,8 @@
 # jev-router
 
+A local proxy that routes each coding-CLI turn (Claude Code, Codex, Antigravity, GLM) to the
+cheapest sufficient model and reasoning effort. It is off-chain developer tooling.
+
 [Overview page](docs/story.html) · [Router Q&A](docs/QNA.md)
 
 ![Codex routing decision with automatic effort selection highlighted](docs/assets/codex-effort-highlight.png)
@@ -29,6 +32,40 @@ Each CLI retains its native interface, tools, sessions, permissions, and authent
 
 All commands launch the real upstream CLI. Jev chooses a model at the start of each user
 turn.
+
+## Technology Stack
+
+- **Blockchain**: none. This project has no on-chain component.
+- **Runtime**: Node.js 20.12+ (ES modules). Analyzer commands need Node.js 22.15+ for `node:sqlite`.
+- **Routing decision**: TypeSafe Jev API through `@typesafe-ai/sdk`, the only runtime dependency.
+- **Integration**: local HTTP proxies in front of the official Claude Code, OpenAI Codex,
+  Antigravity and ZAI CLIs.
+- **Testing and CI**: `node:test`; GitHub Actions on Node.js 20.12 and 22.15.
+
+## Supported Networks
+
+Not applicable. jev-router does not deploy to or connect to BNB Chain (BSC, opBNB,
+Greenfield), Ethereum or any other blockchain network. It connects only to the model
+providers of the CLIs above and to the TypeSafe Jev API.
+
+## Contract Addresses
+
+None. The project has no smart contracts.
+
+## Features
+
+- Per-turn model routing for Claude Code, OpenAI Codex, Antigravity and GLM.
+- Automatic reasoning-effort selection for Codex, limited to the levels the account catalog advertises.
+- Each CLI keeps its native interface, tools, sessions, permissions and login.
+- Falls back to the current model when no key is set, Jev fails, or the deadline passes.
+- Router keys stay in the launcher process and are removed from child CLI environments.
+- Optional skill and agent recommendations, and an opt-in evidence-driven improvement runtime.
+
+## Repository
+
+This repository, [globalmpc/jev-router-effort](https://github.com/globalmpc/jev-router-effort),
+is the official source of this edition. The original project is
+[gargpratyush/jev-router](https://github.com/gargpratyush/jev-router); see `UPSTREAM.md`.
 
 ## Evidence-driven improvement (opt-in)
 
